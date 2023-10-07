@@ -3,6 +3,7 @@ package com.litao.share.user.controller;
 import com.litao.share.common.resp.CommonResp;
 import com.litao.share.user.domain.dto.LoginDTO;
 import com.litao.share.user.domain.entity.User;
+import com.litao.share.user.domain.resp.UserLoginResp;
 import com.litao.share.user.service.UserService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
@@ -23,10 +24,10 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public CommonResp<User> login(@Valid @RequestBody LoginDTO loginDTO){
-        User user = userService.login(loginDTO);
-        CommonResp<User> commonResp=new CommonResp<>();
-        commonResp.setData(user);
+    public CommonResp<UserLoginResp> login(@Valid @RequestBody LoginDTO loginDTO){
+        UserLoginResp userLoginResp = userService.login(loginDTO);
+        CommonResp<UserLoginResp> commonResp=new CommonResp<>();
+        commonResp.setData(userLoginResp);
         return commonResp;
     }
 

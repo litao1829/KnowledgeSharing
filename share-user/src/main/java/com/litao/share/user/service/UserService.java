@@ -1,16 +1,21 @@
 package com.litao.share.user.service;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.jwt.JWTUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.litao.share.common.exception.BusinessException;
 import com.litao.share.common.exception.BusinessExceptionEnum;
 import com.litao.share.common.util.SnowUtil;
 import com.litao.share.user.domain.dto.LoginDTO;
 import com.litao.share.user.domain.entity.User;
+import com.litao.share.user.domain.resp.UserLoginResp;
 import com.litao.share.user.mapper.UserMapper;
 import jakarta.annotation.Resource;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Map;
 
 @Service
 public class UserService {
@@ -30,7 +35,7 @@ public class UserService {
      * @param loginDTO
      * @return
      */
-    public User login(LoginDTO loginDTO){
+    public UserLoginResp login(LoginDTO loginDTO){
         //根据用户手机查询用户
         User userDB = userMapper.selectOne(new QueryWrapper<User>().lambda().eq(User::getPhone, loginDTO.getPhone()));
 
@@ -45,7 +50,16 @@ public class UserService {
         }
 
         //都正确，返回
-        return userDB;
+
+        UserLoginResp userLoginResp= UserLoginResp.builder()
+                .user(userDB)
+                .build();
+
+        String key="litao";
+        Map<String,Object> map= BeanUtil.beanToMap(userLoginResp);
+        String token = JWTUtil.createToken(map, key.getBytes());
+        userLoginResp.setToken(token);
+        return userLoginResp;
     }
 
     /**
