@@ -1,5 +1,6 @@
 package com.litao.share.common.handler;
 
+import com.litao.share.common.exception.BusinessException;
 import com.litao.share.common.resp.CommonResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -18,6 +19,16 @@ public class ControllerExceptionHandler {
         log.error("系统异常",e);
         resp.setSuccess(false);
         resp.setMessage(e.getMessage());
+        return  resp;
+    }
+
+    @ExceptionHandler(value = BusinessException.class)
+    @ResponseBody
+    public CommonResp<?> businessExceptionHandler(BusinessException e){
+        CommonResp<?> resp=new CommonResp<>();
+        log.error("业务异常",e);
+        resp.setSuccess(false);
+        resp.setMessage(e.getE().getDesc());
         return  resp;
     }
 }

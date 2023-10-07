@@ -1,6 +1,8 @@
 package com.litao.share.user.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.litao.share.common.exception.BusinessException;
+import com.litao.share.common.exception.BusinessExceptionEnum;
 import com.litao.share.user.domain.dto.LoginDTO;
 import com.litao.share.user.domain.entity.User;
 import com.litao.share.user.mapper.UserMapper;
@@ -31,12 +33,12 @@ public class UserService {
 
         //没有找到，抛出运行时异常
         if(userDB==null){
-            throw new RuntimeException("手机号不存在");
+            throw new BusinessException(BusinessExceptionEnum.PHONE_NOT_EXIST);
         }
 
         //密码错误
         if(!userDB.getPassword().equals(loginDTO.getPassword())){
-            throw new RuntimeException("密码错误");
+            throw new BusinessException(BusinessExceptionEnum.PASSWORD_ERROR);
         }
 
         //都正确，返回
