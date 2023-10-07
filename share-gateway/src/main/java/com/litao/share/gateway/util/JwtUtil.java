@@ -1,4 +1,4 @@
-package com.litao.share.common.util;
+package com.litao.share.gateway.util;
 
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateTime;
