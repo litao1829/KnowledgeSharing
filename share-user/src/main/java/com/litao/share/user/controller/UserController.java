@@ -5,6 +5,7 @@ import com.litao.share.user.domain.dto.LoginDTO;
 import com.litao.share.user.domain.entity.User;
 import com.litao.share.user.service.UserService;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,7 +23,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public CommonResp<User> login(@RequestBody LoginDTO loginDTO){
+    public CommonResp<User> login(@Valid @RequestBody LoginDTO loginDTO){
         User user = userService.login(loginDTO);
         CommonResp<User> commonResp=new CommonResp<>();
         commonResp.setData(user);
