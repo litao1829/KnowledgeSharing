@@ -50,7 +50,7 @@ public class LogAspect {
 
         //打印请求消息
         log.info("--------------开始--------------");
-        log.info("请求地址：{}{}",request.getRequestURI().toString(),request.getMethod());
+        log.info("请求地址：{} {}",request.getRequestURL().toString(),request.getMethod());
         log.info("类名方法：{}{}",signature.getDeclaringTypeName(),name);
         log.info("远程地址：{}",request.getRemoteAddr());
 
