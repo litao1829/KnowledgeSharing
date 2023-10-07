@@ -1,10 +1,9 @@
 package com.litao.share.user.service;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.jwt.JWTUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.litao.share.common.exception.BusinessException;
 import com.litao.share.common.exception.BusinessExceptionEnum;
+import com.litao.share.common.util.JwtUtil;
 import com.litao.share.common.util.SnowUtil;
 import com.litao.share.user.domain.dto.LoginDTO;
 import com.litao.share.user.domain.entity.User;
@@ -55,9 +54,11 @@ public class UserService {
                 .user(userDB)
                 .build();
 
-        String key="litao";
-        Map<String,Object> map= BeanUtil.beanToMap(userLoginResp);
-        String token = JWTUtil.createToken(map, key.getBytes());
+//        String key="litao";
+//        Map<String,Object> map= BeanUtil.beanToMap(userLoginResp);
+//        String token = JWTUtil.createToken(map, key.getBytes());
+        String token = JwtUtil.createToken(userLoginResp.getUser().getId(),
+                                userLoginResp.getUser().getPhone());
         userLoginResp.setToken(token);
         return userLoginResp;
     }
