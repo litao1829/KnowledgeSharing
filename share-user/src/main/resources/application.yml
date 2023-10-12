@@ -1,8 +1,19 @@
 server:
   port: 8001
-  servlet:
-    context-path: /user-service
+#  servlet:
+#    context-path: /user-service
 spring:
+  application:
+    name: user-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        heart-beat-timeout: 15000
+        heart-beat-interval: 5000
+        namespace: dev
+        username: nacos
+        password: nacos
   datasource:
     url: jdbc:mysql://localhost:3306/user_center?characterEncoding=UTF8&autoReconnect=true&serverTimezone=Asia/Shanghai
     username: root

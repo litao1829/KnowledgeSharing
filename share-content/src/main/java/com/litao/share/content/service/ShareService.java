@@ -4,10 +4,16 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.util.StringUtil;
+import com.litao.share.common.resp.CommonResp;
+import com.litao.share.content.domain.dto.ExchangeDTO;
+import com.litao.share.content.domain.dto.UserAddBonusMsgDTO;
 import com.litao.share.content.domain.entity.MidUserShare;
 import com.litao.share.content.domain.entity.Share;
+import com.litao.share.content.domain.entity.User;
+import com.litao.share.content.feign.UserService;
 import com.litao.share.content.mapper.MidUserShareMapper;
 import com.litao.share.content.mapper.ShareMapper;
+import com.litao.share.content.resp.ShareResp;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +28,8 @@ public class ShareService {
     @Resource
     private MidUserShareMapper midUserShareMapper;
 
+    @Resource
+    private UserService userService;
 
     /**
      * 查询某个用户首页可见的资源列表
@@ -66,5 +74,69 @@ public class ShareService {
 
         }
         return shareDeal;
+    }
+
+    public ShareResp findById(Long shareId){
+        Share share = shareMapper.selectById(shareId);
+        CommonResp<User> commonResp = userService.getUser(share.getUserId());
+        return ShareResp.builder()
+                .share(share)
+                .nickname(commonResp.getData().getNickname())
+                .avatarUrl(commonResp.getData().getAvatarUrl())
+                .build();
+    }
+
+
+    /**
+     * 兑换逻辑
+     * @param exchangeDTO
+     * @return
+     */
+    public Share exchange(ExchangeDTO exchangeDTO){
+
+        Long shareId = exchangeDTO.getShareId();
+        Long userId = exchangeDTO.getUserId();
+
+        //1.根据id查询share，校验需要兑换的资源是否存在
+        Share share = shareMapper.selectById(shareId);
+        if(share==null){
+            throw new IllegalArgumentException("该分享不存在！");
+        }
+
+        //2.如果当前用户已经兑换过改分享，则直接返回该分享（不需要扣积分）
+        MidUserShare midUserShare = midUserShareMapper.selectOne(new QueryWrapper<MidUserShare>().lambda()
+                .eq(MidUserShare::getShareId, shareId)
+                .eq(MidUserShare::getUserId, userId));
+
+        if(midUserShare!=null){
+                return  share;
+        }
+
+        //3.查看用户积分是否足够
+        CommonResp<User> commonResp=userService.getUser(userId);
+        User user = commonResp.getData();
+
+        //兑换这条资源所需要的积分
+        Integer price = share.getPrice();
+
+        //查看积分是否足够
+        if(price>user.getBonus()){
+            throw new IllegalArgumentException("用户积分不够！");
+        }
+
+        //4.修改积分（*-1就是负值扣分）
+        userService.updateBonus(
+                UserAddBonusMsgDTO.builder()
+                        .userId(userId)
+                        .bonus(price*-1)
+                        .build());
+        //5.向mid_user_share表插入一条数据，让这用户对于这条资源有了下载权限
+        midUserShareMapper.insert(
+                MidUserShare.builder()
+                        .userId(userId)
+                        .shareId(shareId)
+                        .build());
+
+        return  share;
     }
 }

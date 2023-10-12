@@ -31,6 +31,11 @@ Content-Type: application/json
 }
 
 ###
+GET http://localhost:8000/user-service/user/1
+Accept: application/json
+token:{{token}}
+
+###
 GET http://localhost:8000/content-service/share/notice
 Accept: application/json
 
@@ -42,3 +47,13 @@ Accept: application/json
 ###
 GET http://localhost:8000/content-service/share/list?title=并发编程
 Accept: application/json
+
+###
+PUT http://localhost:8000/user-service/user/update-bouns
+Content-Type: application/json
+token:{{token}}
+
+{
+  "userId": 2,
+  "bonus": -11
+}

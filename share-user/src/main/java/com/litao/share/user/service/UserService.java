@@ -6,20 +6,61 @@ import com.litao.share.common.exception.BusinessExceptionEnum;
 import com.litao.share.common.util.JwtUtil;
 import com.litao.share.common.util.SnowUtil;
 import com.litao.share.user.domain.dto.LoginDTO;
+import com.litao.share.user.domain.dto.UserAddBonusMsgDTO;
+import com.litao.share.user.domain.entity.BonusEventLog;
 import com.litao.share.user.domain.entity.User;
 import com.litao.share.user.domain.resp.UserLoginResp;
+import com.litao.share.user.mapper.BonusEventLogMapper;
 import com.litao.share.user.mapper.UserMapper;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class UserService {
     @Resource
     private UserMapper userMapper;
+
+    @Resource
+    private BonusEventLogMapper bonusEventLogMapper;
+
+
+    /**
+     * 修改用户积分，同时添加明细信息
+     * @param userAddBonusMsgDTO
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void updateBonus(UserAddBonusMsgDTO userAddBonusMsgDTO){
+        log.info(userAddBonusMsgDTO.toString());
+
+        //1.为用户修改积分
+        Long userId=userAddBonusMsgDTO.getUserId();
+        Integer bonus = userAddBonusMsgDTO.getBonus();
+        User user = userMapper.selectById(userId);
+        user.setBonus(user.getBonus()+bonus);
+        userMapper.update(user,new QueryWrapper<User>().lambda().eq(User::getId,userId));
+
+
+        //2.记录日志到bonus_event_log表里
+        bonusEventLogMapper.insert(
+                BonusEventLog.builder()
+                        .userId(userId)
+                        .value(bonus)
+                        .description(userAddBonusMsgDTO.getDescription())
+                        .event(userAddBonusMsgDTO.getEvent())
+                        .createTime(new Date())
+                        .build()
+        );
+
+        log.info("积分添加完毕....");
+    }
+
 
     /**
      * 统计用户数量
@@ -92,4 +133,16 @@ public class UserService {
         userMapper.insert(saveUser);
         return saveUser.getId();
     }
+
+
+    /**
+     * 根据用户id查询用户
+     * @param userId
+     * @return
+     */
+    public User findById(Long userId){
+        return userMapper.selectById(userId);
+    }
+
+
 }

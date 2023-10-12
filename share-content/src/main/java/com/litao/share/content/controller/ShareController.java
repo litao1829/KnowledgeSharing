@@ -4,12 +4,15 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.jwt.JWTUtil;
 import com.litao.share.common.resp.CommonResp;
 import com.litao.share.common.util.JwtUtil;
+import com.litao.share.content.domain.dto.ExchangeDTO;
 import com.litao.share.content.domain.entity.Notice;
 import com.litao.share.content.domain.entity.Share;
+import com.litao.share.content.resp.ShareResp;
 import com.litao.share.content.service.NoticeService;
 import com.litao.share.content.service.ShareService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -72,4 +75,29 @@ public class ShareController {
         return userId;
     }
 
+
+    /**
+     * 根据shareId返回share和发布人信息
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    public CommonResp<ShareResp> getShareById(@PathVariable("id") Long id){
+        ShareResp shareResp = shareService.findById(id);
+        CommonResp<ShareResp> commonResp=new CommonResp<>();
+        commonResp.setData(shareResp);
+        return commonResp;
+    }
+
+    /**
+     * 兑换接口
+     * @param exchangeDTO
+     * @return
+     */
+    @PostMapping("/exchange")
+    public CommonResp<Share> exchange(@RequestBody ExchangeDTO exchangeDTO){
+        CommonResp<Share> commonResp =new CommonResp<>();
+        commonResp.setData(shareService.exchange(exchangeDTO));
+        return commonResp;
+    }
 }

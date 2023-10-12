@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -41,9 +43,8 @@ public class Share {
     private String reason;
 
 
-    @JsonFormat(locale = "zh",timezone = "GTM+8",pattern = "yyyy-MM-dd HH:mm:ss")
-    private Data createTime;
+    private Date createTime;
 
-    @JsonFormat(locale = "zh",timezone = "GTM+8",pattern = "yyyy-MM-dd HH:mm:ss")
-    private Data updateTime;
+
+    private Date updateTime;
 }

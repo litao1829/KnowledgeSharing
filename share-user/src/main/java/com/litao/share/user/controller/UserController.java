@@ -2,6 +2,7 @@ package com.litao.share.user.controller;
 
 import com.litao.share.common.resp.CommonResp;
 import com.litao.share.user.domain.dto.LoginDTO;
+import com.litao.share.user.domain.dto.UserAddBonusMsgDTO;
 import com.litao.share.user.domain.entity.User;
 import com.litao.share.user.domain.resp.UserLoginResp;
 import com.litao.share.user.service.UserService;
@@ -37,5 +38,39 @@ public class UserController {
         CommonResp<Long> commonResp=new CommonResp<>();
         commonResp.setData(id);
         return  commonResp;
+    }
+
+    /**
+     * 根据用户id查询用户
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    public CommonResp<User> getUserById(@PathVariable("id")Long id){
+        User user=userService.findById(id);
+        CommonResp<User> commonResp=new CommonResp<>();
+        commonResp.setData(user);
+        return commonResp;
+    }
+
+    /**
+     * 用户兑换修改积分
+     * @param userAddBonusMsgDTO
+     * @return
+     */
+    @PutMapping(value = "/update-bouns")
+    public CommonResp<User> updateBonus(@RequestBody UserAddBonusMsgDTO userAddBonusMsgDTO){
+        Long userId = userAddBonusMsgDTO.getUserId();
+        userService.updateBonus(
+                UserAddBonusMsgDTO.builder()
+                        .userId(userId)
+                        .bonus(userAddBonusMsgDTO.getBonus())
+                        .description("兑换分享")
+                        .event("BUY")
+                        .build());
+        CommonResp<User> commonResp=new CommonResp<>();
+        User user = userService.findById(userId);
+        commonResp.setData(user);
+        return commonResp;
     }
 }
