@@ -138,4 +138,20 @@ public class ShareController {
         commonResp.setData(contribute);
         return commonResp;
     }
+
+    @GetMapping("/my-contribute")
+    public CommonResp<List<Share>> myContribute(
+            @RequestParam(required = false,defaultValue = "1")Integer pageNo,
+            @RequestParam(required = false,defaultValue = "8")Integer pageSize,
+            @RequestHeader(required = false,value = "token")String token){
+        if(pageSize>MAX){
+            pageSize=MAX;
+        }
+
+        Long userId = getUserIdFromToken(token);
+        List<Share> shares = shareService.myContribute(pageNo, pageSize, userId);
+        CommonResp<List<Share>> commonResp=new CommonResp<>();
+        commonResp.setData(shares);
+        return commonResp;
+    }
 }

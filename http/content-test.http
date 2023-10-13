@@ -43,3 +43,8 @@ token:{{token}}
   "cover": "https://",
   "summary": "详情Vue.js详解Vue.js详解Vue.js详解Vue.js详解Vue.js详解Vue.js详解"
 }
+
+###
+GET http://localhost:8000/content-service/share/my-contribute?pageNo=3&pageSize=2
+Accept: application/json
+token:{{token}}
