@@ -28,3 +28,18 @@ token:{{token}}
   "userId": 2,
   "shareId": 22
 }
+
+###
+POST http://localhost:8000/content-service/share/contribute
+Content-Type: application/json
+token:{{token}}
+
+{
+  "author": "尤雨溪",
+  "title": "详解Vue.js",
+  "isOriginal": 1,
+  "price": 10,
+  "downloadUrl": "http://cn.vuejs.org",
+  "cover": "https://",
+  "summary": "详情Vue.js详解Vue.js详解Vue.js详解Vue.js详解Vue.js详解Vue.js详解"
+}

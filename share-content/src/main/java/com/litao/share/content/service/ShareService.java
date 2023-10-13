@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.util.StringUtil;
 import com.litao.share.common.resp.CommonResp;
 import com.litao.share.content.domain.dto.ExchangeDTO;
+import com.litao.share.content.domain.dto.ShareRequestDTO;
 import com.litao.share.content.domain.dto.UserAddBonusMsgDTO;
 import com.litao.share.content.domain.entity.MidUserShare;
 import com.litao.share.content.domain.entity.Share;
@@ -18,6 +19,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -138,5 +140,30 @@ public class ShareService {
                         .build());
 
         return  share;
+    }
+
+    /**
+     *投稿
+     * @param shareRequestDTO
+     * @return
+     */
+    public int contribute(ShareRequestDTO shareRequestDTO){
+        Share share = Share.builder()
+                .isOriginal(shareRequestDTO.getIsOriginal())
+                .author(shareRequestDTO.getAuthor())
+                .price(shareRequestDTO.getPrice())
+                .downloadUrl(shareRequestDTO.getDownloadUrl())
+                .summary(shareRequestDTO.getSummary())
+                .buyCount(0)
+                .title(shareRequestDTO.getTitle())
+                .userId(shareRequestDTO.getUserId())
+                .cover(shareRequestDTO.getCover())
+                .createTime(new Date())
+                .updateTime(new Date())
+                .showFlag(false)
+                .auditStatus("NOT_YET")
+                .reason("未审核")
+                .build();
+        return shareMapper.insert(share);
     }
 }

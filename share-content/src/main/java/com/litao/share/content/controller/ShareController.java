@@ -5,6 +5,7 @@ import cn.hutool.jwt.JWTUtil;
 import com.litao.share.common.resp.CommonResp;
 import com.litao.share.common.util.JwtUtil;
 import com.litao.share.content.domain.dto.ExchangeDTO;
+import com.litao.share.content.domain.dto.ShareRequestDTO;
 import com.litao.share.content.domain.entity.Notice;
 import com.litao.share.content.domain.entity.Share;
 import com.litao.share.content.resp.ShareResp;
@@ -12,6 +13,8 @@ import com.litao.share.content.service.NoticeService;
 import com.litao.share.content.service.ShareService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/share")
 @Slf4j
+@RefreshScope
 public class ShareController {
     @Resource
     private ShareService shareService;
@@ -27,14 +31,29 @@ public class ShareController {
     @Resource
     private NoticeService noticeService;
 
+
+    @Value("${open}")
+    private Boolean open;
+
     private final int MAX=100;
 
     @GetMapping(value = "/notice")
     public CommonResp<Notice> getLatesNotice(){
         CommonResp<Notice> commonResp=new CommonResp<>();
+        if(!open){
+            commonResp.setData(Notice.builder()
+                    .content("系统正在维护中...")
+                    .showFlag(true)
+                    .id(0L)
+                    .build());
+
+            return commonResp;
+        }
         commonResp.setData(noticeService.getLatest());
         return commonResp;
     }
+
+
 
     /**
      * 
@@ -98,6 +117,25 @@ public class ShareController {
     public CommonResp<Share> exchange(@RequestBody ExchangeDTO exchangeDTO){
         CommonResp<Share> commonResp =new CommonResp<>();
         commonResp.setData(shareService.exchange(exchangeDTO));
+        return commonResp;
+    }
+
+
+    /**
+     * 投稿接口
+     * @param shareRequestDTO
+     * @param token
+     * @return
+     */
+    @PostMapping("/contribute")
+    public CommonResp<Integer> contributeShare(@RequestBody ShareRequestDTO shareRequestDTO,
+                               @RequestHeader(value = "token",required = false)String token){
+        Long userId = getUserIdFromToken(token);
+        shareRequestDTO.setUserId(userId);
+        log.info(shareRequestDTO.toString());
+        int contribute = shareService.contribute(shareRequestDTO);
+        CommonResp<Integer> commonResp=new CommonResp<>();
+        commonResp.setData(contribute);
         return commonResp;
     }
 }

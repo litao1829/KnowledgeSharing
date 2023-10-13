@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: content-service
+  cloud:
+    nacos:
+      config:
+        # nacos config服务器的地址
+        server-addr: localhost:8848
+        file-extension: yml
+        # prefix: ⽂件名前缀，默认是 spring.application.name
+        # 如果没有指定命令空间，则默认命令空间为PUBLIC
+        namespace: dev
+        # 如果没有配置 Group，则默认值为 DEFAULT_GROUP
+        #从 Nacos 读取配置项的超时时间
+        timeout: 5000
+        # ⻓轮询超时时间
+        config-long-poll-timeout: 10000
+        # 轮询的重试时间
+        config-retry-time: 2000
+        # ⻓轮询最⼤重试次数
+        max-retry: 3
+        #开启监听和自动刷新
+        refresh-enabled: true
+        #配置账号和密码
+        username: nacos
+        password: nacos
