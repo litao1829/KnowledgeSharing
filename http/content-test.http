@@ -35,8 +35,8 @@ Content-Type: application/json
 token:{{token}}
 
 {
-  "author": "尤雨溪",
-  "title": "详解Vue.js",
+  "author": "尤雨溪2",
+  "title": "详解Vue.js2222",
   "isOriginal": 1,
   "price": 10,
   "downloadUrl": "http://cn.vuejs.org",
@@ -46,5 +46,10 @@ token:{{token}}
 
 ###
 GET http://localhost:8000/content-service/share/my-contribute?pageNo=3&pageSize=2
+Accept: application/json
+token:{{token}}
+
+###
+GET http://localhost:8000/content-service/share/admin/list
 Accept: application/json
 token:{{token}}
