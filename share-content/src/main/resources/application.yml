@@ -23,6 +23,9 @@ logging:
   level:
     com.litao.share.content.mapper: debug
 
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+
 rocketmq:
   name-server: 8.130.48.205:9876
   producer:

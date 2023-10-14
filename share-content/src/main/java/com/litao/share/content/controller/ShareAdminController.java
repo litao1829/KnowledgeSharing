@@ -5,12 +5,14 @@ import com.litao.share.content.domain.dto.ShareAuditDTO;
 import com.litao.share.content.domain.entity.Share;
 import com.litao.share.content.service.ShareService;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/share/admin")
+@Slf4j
 public class ShareAdminController {
     @Resource
     private ShareService shareService;
@@ -23,7 +25,9 @@ public class ShareAdminController {
     @GetMapping("/list")
     public CommonResp<List<Share>> getShareNotYet(){
         CommonResp<List<Share>> commonResp=new CommonResp<>();
-        commonResp.setData(shareService.querySharesNotYet());
+        List<Share> shares = shareService.querySharesNotYet();
+        log.info(shares.toString());
+        commonResp.setData(shares);
         return commonResp;
     }
 

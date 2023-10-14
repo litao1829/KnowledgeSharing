@@ -238,4 +238,16 @@ public class ShareService {
         }
         return share;
     }
+
+
+    /**
+     * 查找兑换过的分享
+     * @param userId
+     * @return
+     */
+    public List<Share> exchangeListByUserId(Long userId){
+        //2.根据shareid找出兑换过的share
+        List<Share> shares = shareMapper.selectExchangeByUserId(userId);
+        return  shares;
+    }
 }

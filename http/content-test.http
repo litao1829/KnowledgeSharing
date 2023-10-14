@@ -65,3 +65,8 @@ token:{{token}}
   "reason": "通过审核",
   "showFlag": true
 }
+
+###
+GET http://localhost:8000/content-service/share/myexchange
+Accept: application/json
+token:{{token}}

@@ -139,6 +139,13 @@ public class ShareController {
         return commonResp;
     }
 
+    /**
+     * 我的投稿
+     * @param pageNo
+     * @param pageSize
+     * @param token
+     * @return
+     */
     @GetMapping("/my-contribute")
     public CommonResp<List<Share>> myContribute(
             @RequestParam(required = false,defaultValue = "1")Integer pageNo,
@@ -150,6 +157,20 @@ public class ShareController {
 
         Long userId = getUserIdFromToken(token);
         List<Share> shares = shareService.myContribute(pageNo, pageSize, userId);
+        CommonResp<List<Share>> commonResp=new CommonResp<>();
+        commonResp.setData(shares);
+        return commonResp;
+    }
+
+    /**
+     * 查看我的兑换
+     * @param token
+     * @return
+     */
+    @GetMapping("/myexchange")
+    public CommonResp<List<Share>> exchangeListByUserId(@RequestHeader(required = false,value = "token")String token){
+        Long userId = getUserIdFromToken(token);
+        List<Share> shares = shareService.exchangeListByUserId(userId);
         CommonResp<List<Share>> commonResp=new CommonResp<>();
         commonResp.setData(shares);
         return commonResp;

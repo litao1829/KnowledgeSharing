@@ -1,5 +1,6 @@
 package com.litao.share.user.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.litao.share.common.exception.BusinessException;
 import com.litao.share.common.exception.BusinessExceptionEnum;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -145,4 +147,15 @@ public class UserService {
     }
 
 
+    /**
+     * 根据用户查id询明细
+     * @param userId
+     * @return
+     */
+    public List<BonusEventLog> LogByUserId(Long userId){
+        LambdaQueryWrapper<BonusEventLog> wrapper=new LambdaQueryWrapper<>();
+        wrapper.eq(BonusEventLog::getUserId,userId);
+        List<BonusEventLog> logs = bonusEventLogMapper.selectList(wrapper);
+        return logs;
+    }
 }

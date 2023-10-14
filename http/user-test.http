@@ -57,3 +57,8 @@ token:{{token}}
   "userId": 2,
   "bonus": -11
 }
+
+###
+GET http://localhost:8000/user-service/user/logs/1
+Accept: application/json
+token:{{token}}

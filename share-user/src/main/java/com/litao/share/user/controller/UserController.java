@@ -3,12 +3,15 @@ package com.litao.share.user.controller;
 import com.litao.share.common.resp.CommonResp;
 import com.litao.share.user.domain.dto.LoginDTO;
 import com.litao.share.user.domain.dto.UserAddBonusMsgDTO;
+import com.litao.share.user.domain.entity.BonusEventLog;
 import com.litao.share.user.domain.entity.User;
 import com.litao.share.user.domain.resp.UserLoginResp;
 import com.litao.share.user.service.UserService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -71,6 +74,19 @@ public class UserController {
         CommonResp<User> commonResp=new CommonResp<>();
         User user = userService.findById(userId);
         commonResp.setData(user);
+        return commonResp;
+    }
+
+    /**
+     * 根据用户id查询明细
+     * @param id
+     * @return
+     */
+    @GetMapping("/logs/{id}")
+    public CommonResp<List<BonusEventLog>> getLogsByUserId(@PathVariable("id")Long id){
+        CommonResp<List<BonusEventLog>> commonResp=new CommonResp<>();
+        List<BonusEventLog> logs = userService.LogByUserId(id);
+        commonResp.setData(logs);
         return commonResp;
     }
 }
