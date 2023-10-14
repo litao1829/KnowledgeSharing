@@ -5,22 +5,23 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.util.StringUtil;
 import com.litao.share.common.resp.CommonResp;
-import com.litao.share.content.domain.dto.ExchangeDTO;
-import com.litao.share.content.domain.dto.ShareRequestDTO;
-import com.litao.share.content.domain.dto.UserAddBonusMsgDTO;
+import com.litao.share.content.domain.dto.*;
 import com.litao.share.content.domain.entity.MidUserShare;
 import com.litao.share.content.domain.entity.Share;
 import com.litao.share.content.domain.entity.User;
+import com.litao.share.content.enums.AuditStatusEnum;
 import com.litao.share.content.feign.UserService;
 import com.litao.share.content.mapper.MidUserShareMapper;
 import com.litao.share.content.mapper.ShareMapper;
 import com.litao.share.content.resp.ShareResp;
 import jakarta.annotation.Resource;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.stereotype.Service;
 
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,6 +33,9 @@ public class ShareService {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private RocketMQTemplate rocketMQTemplate;
 
     /**
      * 查询某个用户首页可见的资源列表
@@ -191,5 +195,47 @@ public class ShareService {
         wrapper.eq(Share::getShowFlag,false)
                 .eq(Share::getAuditStatus,"NOT_YET");
         return shareMapper.selectList(wrapper);
+    }
+
+    /**
+     * 审核
+     * @param id
+     * @param shareAuditDTO
+     * @return
+     */
+    public Share auditById(Long id, ShareAuditDTO shareAuditDTO){
+        //1.查询share是否存在，不存在或者当前的audit-status！=NOT_YET，那么抛异常
+        Share share = shareMapper.selectById(id);
+        if(share==null){
+            throw new IllegalArgumentException("非法传参！该分享不存在");
+        }
+        if(!Objects.equals("NOT_YET",share.getAuditStatus())){
+            throw  new IllegalArgumentException("参数非法！该分享已审核通过或审核不通过");
+        }
+        //2.审核资源，将资源改为PASS或者REJECT，更新原因和是否显示发布
+        share.setAuditStatus(shareAuditDTO.getAuditStatusEnum().toString());
+        share.setReason(shareAuditDTO.getReason());
+        share.setShowFlag(shareAuditDTO.getShowFlag());
+        LambdaQueryWrapper<Share> wrapper=new LambdaQueryWrapper<>();
+        wrapper.eq(Share::getId,id);
+        shareMapper.update(share,wrapper);
+
+        //3.向mid_user插入一条数据，分享的作者通过审核后，默认拥有了下载权限
+        midUserShareMapper.insert(
+                MidUserShare.builder()
+                        .userId(share.getUserId())
+                        .shareId(share.getId())
+                        .build());
+
+        //4.如果是PASS，那么发送消息给rocketmq，让用户中心去消费，并为发布人添加积分（投稿加50分）
+        if(AuditStatusEnum.PASS.equals(shareAuditDTO.getAuditStatusEnum())){
+            this.rocketMQTemplate.convertAndSend(
+                    "add-bouns",
+                    UserAddBounsMQDTO.builder()
+                            .userId(share.getUserId())
+                            .bonus(50)
+                            .build());
+        }
+        return share;
     }
 }

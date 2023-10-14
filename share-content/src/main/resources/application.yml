@@ -22,3 +22,9 @@ spring:
 logging:
   level:
     com.litao.share.content.mapper: debug
+
+rocketmq:
+  name-server: 8.130.48.205:9876
+  producer:
+    #必须指定group
+    group: test-group
