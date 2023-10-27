@@ -154,6 +154,7 @@ public class UserService {
      */
     public List<BonusEventLog> LogByUserId(Long userId){
         LambdaQueryWrapper<BonusEventLog> wrapper=new LambdaQueryWrapper<>();
+        wrapper.orderByDesc(BonusEventLog::getCreateTime);
         wrapper.eq(BonusEventLog::getUserId,userId);
         List<BonusEventLog> logs = bonusEventLogMapper.selectList(wrapper);
         return logs;

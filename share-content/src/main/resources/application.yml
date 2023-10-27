@@ -31,3 +31,7 @@ rocketmq:
   producer:
     #必须指定group
     group: test-group
+
+
+
+

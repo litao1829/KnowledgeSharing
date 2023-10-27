@@ -11,6 +11,8 @@ import com.litao.share.content.domain.entity.Share;
 import com.litao.share.content.resp.ShareResp;
 import com.litao.share.content.service.NoticeService;
 import com.litao.share.content.service.ShareService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +26,7 @@ import java.util.List;
 @RequestMapping("/share")
 @Slf4j
 @RefreshScope
+@Tag(name = "普通用户接口")
 public class ShareController {
     @Resource
     private ShareService shareService;
@@ -37,6 +40,7 @@ public class ShareController {
 
     private final int MAX=100;
 
+    @Operation(summary = "消息接口")
     @GetMapping(value = "/notice")
     public CommonResp<Notice> getLatesNotice(){
         CommonResp<Notice> commonResp=new CommonResp<>();
@@ -60,6 +64,7 @@ public class ShareController {
      * @param title
      * @return
      */
+    @Operation(summary = "知识分享列表接口")
     @GetMapping("/list")
     public CommonResp<List<Share>> getShareList(@RequestParam(required = false)String title,
                                                 @RequestParam(required = false,defaultValue = "1")Integer pageNo,
@@ -83,6 +88,9 @@ public class ShareController {
     private Long getUserIdFromToken(String token) {
         log.info(">>>>>>>>>>>>>>token："+token);
         long userId=0;
+        if(token==null){
+            return null;
+        }
         String noToken="no-token";
         if(!noToken.equals(token)){
             JSONObject jsonObject = JwtUtil.getJSONObject(token);
@@ -100,6 +108,7 @@ public class ShareController {
      * @param id
      * @return
      */
+    @Operation(summary = "根据ID查询分享接口")
     @GetMapping("/{id}")
     public CommonResp<ShareResp> getShareById(@PathVariable("id") Long id){
         ShareResp shareResp = shareService.findById(id);
@@ -113,6 +122,7 @@ public class ShareController {
      * @param exchangeDTO
      * @return
      */
+    @Operation(summary = "兑换接口")
     @PostMapping("/exchange")
     public CommonResp<Share> exchange(@RequestBody ExchangeDTO exchangeDTO){
         CommonResp<Share> commonResp =new CommonResp<>();
@@ -127,6 +137,7 @@ public class ShareController {
      * @param token
      * @return
      */
+    @Operation(summary = "投稿接口")
     @PostMapping("/contribute")
     public CommonResp<Integer> contributeShare(@RequestBody ShareRequestDTO shareRequestDTO,
                                @RequestHeader(value = "token",required = false)String token){
@@ -146,6 +157,7 @@ public class ShareController {
      * @param token
      * @return
      */
+    @Operation(summary = "我的投稿查询接口")
     @GetMapping("/my-contribute")
     public CommonResp<List<Share>> myContribute(
             @RequestParam(required = false,defaultValue = "1")Integer pageNo,
@@ -167,6 +179,7 @@ public class ShareController {
      * @param token
      * @return
      */
+    @Operation(summary = "我的兑换接口")
     @GetMapping("/myexchange")
     public CommonResp<List<Share>> exchangeListByUserId(@RequestHeader(required = false,value = "token")String token){
         Long userId = getUserIdFromToken(token);

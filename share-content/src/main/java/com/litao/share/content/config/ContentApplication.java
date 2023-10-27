@@ -19,6 +19,5 @@ public class ContentApplication {
         SpringApplication springApplication = new SpringApplication(ContentApplication.class);
         Environment env = springApplication.run(args).getEnvironment();
         log.info("启动成功");
-
     }
 }

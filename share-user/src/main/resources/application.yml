@@ -1,8 +1,21 @@
+web:
+  custom-file-upload: D:\WEBIDEA\微服务\share-api\share-user\src\main\resources\file\
+
 server:
   port: 8001
 #  servlet:
 #    context-path: /user-service
 spring:
+  servlet:
+    multipart:
+      #-1表示无限大
+      max-file-size: -1
+      max-request-size: -1
+  web:
+    resources:
+      #默认有四个，重写配置后丢失默认路径
+      static-locations: classpath:/static/,file:${web.custom-file-upload}
+
   application:
     name: user-service
   cloud:
@@ -28,3 +41,4 @@ rocketmq:
   producer:
     #必须指定group
     group: test-group
+
