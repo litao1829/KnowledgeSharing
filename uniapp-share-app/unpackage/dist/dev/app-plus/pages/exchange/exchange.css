@@ -1,0 +1,91 @@
+/**
+ * 修改common/diygw-ui/index.scss 可以取消相关组件样式
+ * 修改common/diygw-ui/iconfont.scss 如果发布APP可能会图标字体找不到的问题，加上https测试
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.flex-clz[data-v-ea8424b3] {
+  padding-top: 0.625rem;
+  padding-left: 0.625rem;
+  padding-bottom: 0.625rem;
+  padding-right: 0.625rem;
+}
+.text-clz[data-v-ea8424b3] {
+  font-weight: bold;
+  letter-spacing: 0.0625rem !important;
+  font-size: 0.875rem !important;
+}
+.flex1-clz[data-v-ea8424b3] {
+  padding-top: 0.3125rem;
+  padding-left: 0.625rem;
+  padding-bottom: 0.625rem;
+  padding-right: 0.625rem;
+}
+.text1-clz[data-v-ea8424b3] {
+  font-weight: bold;
+}
+.text2-clz[data-v-ea8424b3] {
+  font-weight: bold;
+}
+.text3-clz[data-v-ea8424b3] {
+  font-weight: bold;
+}
+.flex3-clz[data-v-ea8424b3] {
+  text-indent: 0.5rem !important;
+}
+.image-clz[data-v-ea8424b3] {
+  margin-left: 0;
+  width: calc(66.6666666667% - 0 - 0) !important;
+  margin-top: 0.3125rem;
+  margin-bottom: 0.3125rem;
+  margin-right: 0;
+}
+.text4-clz[data-v-ea8424b3] {
+  text-indent: 0.25rem !important;
+}
+.flex4-clz[data-v-ea8424b3] {
+  padding-top: 0.3125rem;
+  bottom: 0;
+  padding-left: 0.625rem;
+  padding-bottom: 0.3125rem;
+  position: absolute;
+  padding-right: 0.625rem;
+}
+.text5-clz[data-v-ea8424b3] {
+  flex-shrink: 0;
+  font-weight: bold;
+  width: 2.5rem !important;
+}
+.text6-clz[data-v-ea8424b3] {
+  margin-left: 0;
+  flex-shrink: 0;
+  width: calc(8.3333333333% - 0 - 0.3125rem) !important;
+  font-size: 0.625rem !important;
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-right: 0.3125rem;
+}
+.button-clz[data-v-ea8424b3] {
+  flex-shrink: 0;
+  height: 2.5rem !important;
+}
+.button-button-clz[data-v-ea8424b3] {
+  font-size: 10px !important;
+  margin: 3px !important;
+  padding: 0px !important;
+}
+.container25498[data-v-ea8424b3] {
+  padding-left: 0px;
+  padding-right: 0px;
+}
